@@ -50,7 +50,7 @@ runDisassembly rom = do
 
 stepEmulation :: forall e. Chip -> Display -> Int -> Eff (EmulationEffects e) Unit
 stepEmulation chip display n = do
-   io <- fetch >>= decode >>= debug >>= eval
+   io <- fetch >>= decode >>= eval
    case io of
      Next -> next n
      Io ClearDisplay -> do
@@ -87,7 +87,7 @@ stepEmulation chip display n = do
      eval = C.eval chip
      next 0 = requestAnimationFrame (stepEmulation chip display 10)
      next n' = stepEmulation chip display (n' - 1)
-     debug op = logShow op *> pure op
+     -- debug op = logShow op *> pure op
 
 
 runEmulation :: forall e. Chip -> Display -> Eff (EmulationEffects e) Unit
@@ -102,7 +102,7 @@ main = do
   height <- getCanvasHeight canvas
   display <- newDisplay ctx {scaleX: width / 64.0, scaleY: height / 32.0}
   
-  let rom = strToBytes ufo
+  let rom = strToBytes invaders
 --  runDisassembly rom
       
   chip <- newChip
@@ -112,3 +112,4 @@ main = do
   where
     maze = decode64 "YABhAKIiwgEyAaIe0BRwBDBAEgRgAHEEMSASBBIcgEAgECBAgBA="
     ufo = decode64 "os1pOGoI2aOi0GsAbAPbw6LWZB1lH9RRZwBoDyKiIqxIABIiZB5lHKLT1FNuAGaAbQTtoWb/bQXtoWYAbQbtoWYBNoAi2KLQ28PNAYvU28M/ABKSos3Zo80BPQBt/3n+2aM/ABKMTgASLqLT1FNFABKGdf+EZNRTPwESRm0IjVJNCBKMEpIirHj/Eh4ioncFEpYioncPIqJtA/0YotPUUxKGovj3M2MAIrYA7qL4+DNjMiK2AO5tG/Jl8CnT1XMF8SnT1XMF8inT1QDuAXz+fGDwYEDgoPjUbgFtEP0YAO4="
+    blitz = decode64 "EhdCTElUWiBCeSBEYXZpZCBXSU5URVKjQWAEYQliDmcE0B7yHnAMMEASIfAKAOAi2fAKAOCOcKMeax/MH4zE3LI/ARJJ3LISOcoHegF7/tyyev86ABJNfv8+ABI5awCMcG0AbgCjG93jPwASwTsAEoFgBeCeEodrAYjQeAKJ4HkDox7YkYHwYAXwFfAHMAASizsBEqujHjEB2JF5ATkgEqtrADEAfP9MABK7oxvd430CPUASuW0AfgESZQDgdwISLaMb3eNgFGECYgujINAb8h5wCDAsEs0S12AKYQ1iBaMH0BXyHnAIMCoS4YBwcP6ABqOH8DPyZWAt8SlhDdAVcAXyKdAVAO6DgoOC++gIiAXivqC4ID6AgICA+ID4/MDA+YHby/sA+oqamfjvKugpKQBvaC5Mj76guLC+AL4iPjSy2NgAw8MA2NgAw8MA2NjAwADAwADAwADAwADb29vbABgYABgYABgYANvb29sAGBgAGBgAGBgAGBjb2wADAwAYGADAwADb2w=="
